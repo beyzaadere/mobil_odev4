@@ -1,125 +1,152 @@
+// Flutter ana paketini import ediyoruz.
+// Bu paket, uygulamanın temel yapı taşlarını sağlar.
 import 'package:flutter/material.dart';
 
 void main() {
-  runApp(const MyApp());
+  // Uygulamanın giriş noktası olan ana fonksiyon.
+  runApp(MyApp());
 }
 
+// Ana uygulama widget'ı olan MyApp sınıfı.
 class MyApp extends StatelessWidget {
-  const MyApp({super.key});
-
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
+      title: 'Ürün Uygulaması', // Uygulamanın adı.
       theme: ThemeData(
-        // This is the theme of your application.
-        //
-        // TRY THIS: Try running your application with "flutter run". You'll see
-        // the application has a purple toolbar. Then, without quitting the app,
-        // try changing the seedColor in the colorScheme below to Colors.green
-        // and then invoke "hot reload" (save your changes or press the "hot
-        // reload" button in a Flutter-supported IDE, or press "r" if you used
-        // the command line to start the app).
-        //
-        // Notice that the counter didn't reset back to zero; the application
-        // state is not lost during the reload. To reset the state, use hot
-        // restart instead.
-        //
-        // This works for code too, not just values: Most code changes can be
-        // tested with just a hot reload.
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-        useMaterial3: true,
+        primarySwatch: Colors.teal, // Tema rengi.
       ),
-      home: const MyHomePage(title: 'Flutter Demo Home Page'),
+      home: ProductPage(), // Ana sayfa olarak ProductPage widget'ı atanır.
     );
   }
 }
 
-class MyHomePage extends StatefulWidget {
-  const MyHomePage({super.key, required this.title});
-
-  // This widget is the home page of your application. It is stateful, meaning
-  // that it has a State object (defined below) that contains fields that affect
-  // how it looks.
-
-  // This class is the configuration for the state. It holds the values (in this
-  // case the title) provided by the parent (in this case the App widget) and
-  // used by the build method of the State. Fields in a Widget subclass are
-  // always marked "final".
-
-  final String title;
-
+// Ana sayfa widget'ı olan ProductPage sınıfı.
+// StatefulWidget, sayfa üzerinde değişiklik yapılmasına olanak sağlar.
+class ProductPage extends StatefulWidget {
   @override
-  State<MyHomePage> createState() => _MyHomePageState();
+  _ProductPageState createState() => _ProductPageState();
 }
 
-class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
+// ProductPage widget'ının durumunu yöneten sınıf.
+class _ProductPageState extends State<ProductPage> {
+  // Ürün listesi oluşturuluyor.
+  // Her ürünün adı ve fiyatı ile tanımlanıyor.
+  final List<Product> products = [
+    Product(name: 'Akıllı Telefon', price: 15000),
+    Product(name: 'Tablet', price: 8000),
+    Product(name: 'Dizüstü Bilgisayar', price: 20000),
+    Product(name: 'Akıllı Saat', price: 3000),
+    Product(name: 'Kulaklık', price: 1500),
+  ];
 
-  void _incrementCounter() {
-    setState(() {
-      // This call to setState tells the Flutter framework that something has
-      // changed in this State, which causes it to rerun the build method below
-      // so that the display can reflect the updated values. If we changed
-      // _counter without calling setState(), then the build method would not be
-      // called again, and so nothing would appear to happen.
-      _counter++;
-    });
-  }
+  // Seçili ürünün indeksini tutar. Varsayılan olarak 0.
+  int selectedIndex = 0;
 
   @override
   Widget build(BuildContext context) {
-    // This method is rerun every time setState is called, for instance as done
-    // by the _incrementCounter method above.
-    //
-    // The Flutter framework has been optimized to make rerunning build methods
-    // fast, so that you can just rebuild anything that needs updating rather
-    // than having to individually change instances of widgets.
     return Scaffold(
       appBar: AppBar(
-        // TRY THIS: Try changing the color here to a specific color (to
-        // Colors.amber, perhaps?) and trigger a hot reload to see the AppBar
-        // change color while the other colors stay the same.
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        // Here we take the value from the MyHomePage object that was created by
-        // the App.build method, and use it to set our appbar title.
-        title: Text(widget.title),
+        title: Text('Ürün Uygulaması'), // Uygulama üst kısmındaki başlık.
       ),
-      body: Center(
-        // Center is a layout widget. It takes a single child and positions it
-        // in the middle of the parent.
-        child: Column(
-          // Column is also a layout widget. It takes a list of children and
-          // arranges them vertically. By default, it sizes itself to fit its
-          // children horizontally, and tries to be as tall as its parent.
-          //
-          // Column has various properties to control how it sizes itself and
-          // how it positions its children. Here we use mainAxisAlignment to
-          // center the children vertically; the main axis here is the vertical
-          // axis because Columns are vertical (the cross axis would be
-          // horizontal).
-          //
-          // TRY THIS: Invoke "debug painting" (choose the "Toggle Debug Paint"
-          // action in the IDE, or press "p" in the console), to see the
-          // wireframe for each widget.
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            const Text(
-              'You have pushed the button this many times:',
+      body: Column(
+        children: [
+          // Ürünlerin yatay bir listede gösterilmesi için Container kullanıyoruz.
+          Container(
+            height: 100, // Yatay liste için sabit yükseklik.
+            child: ListView.builder(
+              scrollDirection: Axis.horizontal, // Yatay kaydırma.
+              itemCount: products.length, // Listede kaç ürün olacağı.
+              itemBuilder: (context, index) {
+                return GestureDetector(
+                  onTap: () {
+                    // Ürün seçildiğinde selectedIndex güncelleniyor.
+                    setState(() {
+                      selectedIndex = index;
+                    });
+                  },
+                  child: Container(
+                    margin: EdgeInsets.all(8), // Kenar boşlukları.
+                    padding: EdgeInsets.all(8), // İçerik boşlukları.
+                    decoration: BoxDecoration(
+                      color: Colors.teal[200],
+                      border: Border.all(
+                        color: selectedIndex == index
+                            ? Colors.red // Seçili ürün kırmızı çerçeveye sahip olur.
+                            : Colors.transparent,
+                        width: 2,
+                      ),
+                      borderRadius: BorderRadius.circular(8), // Yuvarlak kenarlar.
+                    ),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(
+                          products[index].name, // Ürün adı gösteriliyor.
+                          style: TextStyle(fontSize: 16, color: Colors.white),
+                        ),
+                      ],
+                    ),
+                  ),
+                );
+              },
             ),
-            Text(
-              '$_counter',
-              style: Theme.of(context).textTheme.headlineMedium,
+          ),
+          // GridView ile ürünlerin ızgarada gösterilmesi.
+          Expanded(
+            child: GridView.builder(
+              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 2, // 2 sütunlu bir ızgara.
+                crossAxisSpacing: 8, // Sütunlar arası boşluk.
+                mainAxisSpacing: 8, // Satırlar arası boşluk.
+              ),
+              itemCount: products.length,
+              itemBuilder: (context, index) {
+                return GestureDetector(
+                  onTap: () {
+                    // Izgaradaki bir ürün seçildiğinde selectedIndex güncellenir.
+                    setState(() {
+                      selectedIndex = index;
+                    });
+                  },
+                  child: Container(
+                    decoration: BoxDecoration(
+                      color: selectedIndex == index
+                          ? Colors.amberAccent // Seçili ürün vurgulanır.
+                          : Colors.purple[100], // Diğer ürünlerin rengi.
+                      border: Border.all(
+                        color: Colors.grey,
+                      ),
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(
+                          products[index].name, // Ürün adı.
+                          style: TextStyle(fontSize: 18, color: Colors.black),
+                        ),
+                        Text(
+                          '${products[index].price}₺', // Ürün fiyatı.
+                          style: TextStyle(fontSize: 16, color: Colors.black),
+                        ),
+                      ],
+                    ),
+                  ),
+                );
+              },
             ),
-          ],
-        ),
+          ),
+        ],
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
-        child: const Icon(Icons.add),
-      ), // This trailing comma makes auto-formatting nicer for build methods.
     );
   }
+}
+
+// Ürün sınıfı; her ürünün adını ve fiyatını saklar.
+class Product {
+  final String name;
+  final double price;
+
+  Product({required this.name, required this.price});
 }
